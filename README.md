@@ -1,2 +1,6 @@
 # PIORS
-Plateforme intelligente d’orientation et de réussite des stagiaires
+
+Monorepo du projet PIORS.
+
+- Backend Laravel: [backend](./backend)
+- Frontend: a venir
