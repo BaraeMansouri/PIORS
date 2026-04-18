@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Insights\OrientStudentRequest;
 use App\Models\User;
 use App\Services\OrientationService;
+use App\Services\PlatformNotificationService;
 use App\Services\RecommendationService;
 use App\Services\RiskAssessmentService;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,7 @@ class StudentInsightController extends Controller
         protected OrientationService $orientationService,
         protected RiskAssessmentService $riskAssessmentService,
         protected RecommendationService $recommendationService,
+        protected PlatformNotificationService $notificationService,
     ) {
     }
 
@@ -34,6 +36,31 @@ class StudentInsightController extends Controller
     public function orient(OrientStudentRequest $request, User $student): JsonResponse
     {
         $student = $this->orientationService->apply($student, (float) $request->validated('score'));
+
+        if ($student->filiere) {
+            $this->notificationService->notifyUser(
+                $student,
+                'Orientation IA mise a jour',
+                "Votre orientation recommandee est maintenant {$student->filiere->name}.",
+                [
+                    'type' => 'orientation_updated',
+                    'student_id' => $student->id,
+                    'filiere' => $student->filiere->name,
+                ]
+            );
+
+            $this->notificationService->notifyRoles(
+                ['admin', 'formateur'],
+                'Orientation stagiaire mise a jour',
+                "{$student->name} a recu une orientation vers {$student->filiere->name}.",
+                [
+                    'type' => 'orientation_updated',
+                    'student_id' => $student->id,
+                    'student_name' => $student->name,
+                    'filiere' => $student->filiere->name,
+                ]
+            );
+        }
 
         return response()->json([
             'message' => 'Orientation updated successfully.',

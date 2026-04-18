@@ -16,6 +16,7 @@ class StoreInternshipRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:150'],
             'company' => ['required', 'string', 'max:150'],
+            'image' => ['nullable', 'image', 'max:5120'],
             'description' => ['required', 'string'],
             'location' => ['nullable', 'string', 'max:150'],
             'starts_at' => ['nullable', 'date'],

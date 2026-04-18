@@ -9,6 +9,7 @@ class Course extends BaseModel
     protected $fillable = [
         'title',
         'description',
+        'image_path',
         'pdf_path',
         'class_id',
         'filiere_id',

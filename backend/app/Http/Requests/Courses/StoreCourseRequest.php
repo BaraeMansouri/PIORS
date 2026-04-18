@@ -16,6 +16,7 @@ class StoreCourseRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:5120'],
             'pdf' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'class_id' => ['nullable', 'string'],
             'filiere_id' => ['nullable', 'string'],

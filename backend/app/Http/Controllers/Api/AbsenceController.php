@@ -7,11 +7,15 @@ use App\Http\Requests\Absences\StoreAbsenceRequest;
 use App\Models\Absence;
 use App\Models\User;
 use App\Services\AcademicPerformanceService;
+use App\Services\PlatformNotificationService;
 use Illuminate\Http\JsonResponse;
 
 class AbsenceController extends Controller
 {
-    public function __construct(protected AcademicPerformanceService $performanceService)
+    public function __construct(
+        protected AcademicPerformanceService $performanceService,
+        protected PlatformNotificationService $notificationService,
+    )
     {
     }
 
@@ -29,6 +33,7 @@ class AbsenceController extends Controller
 
         if ($student = User::query()->find($absence->student_id)) {
             $this->performanceService->refreshStudentStats($student);
+            $this->notifyIfAtRisk($student);
         }
 
         return response()->json($absence, 201);
@@ -45,6 +50,7 @@ class AbsenceController extends Controller
 
         if ($student = User::query()->find($absence->student_id)) {
             $this->performanceService->refreshStudentStats($student);
+            $this->notifyIfAtRisk($student);
         }
 
         return response()->json($absence->fresh());
@@ -60,5 +66,37 @@ class AbsenceController extends Controller
         }
 
         return response()->json(status: 204);
+    }
+
+    private function notifyIfAtRisk(User $student): void
+    {
+        $threshold = (int) config('app.absence_risk_threshold', env('ABSENCE_RISK_THRESHOLD', 8));
+
+        if (($student->absence_count ?? 0) < $threshold) {
+            return;
+        }
+
+        $this->notificationService->notifyUser(
+            $student,
+            'Alerte absences',
+            "Votre nombre d'absences a atteint {$student->absence_count}. Merci de contacter votre formateur.",
+            [
+                'type' => 'absence_alert',
+                'student_id' => $student->id,
+                'absence_count' => $student->absence_count,
+            ]
+        );
+
+        $this->notificationService->notifyRoles(
+            ['admin', 'formateur'],
+            'Alerte absences stagiaire',
+            "{$student->name} a atteint {$student->absence_count} absences.",
+            [
+                'type' => 'absence_alert',
+                'student_id' => $student->id,
+                'student_name' => $student->name,
+                'absence_count' => $student->absence_count,
+            ]
+        );
     }
 }
