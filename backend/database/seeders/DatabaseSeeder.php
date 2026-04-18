@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
             'role' => UserRole::Admin->value,
             'class_id' => $class->id,
             'filiere_id' => $filiere->id,
+            'city' => 'Casablanca',
+            'bio' => 'Responsable de la supervision et du pilotage global de la plateforme.',
         ]);
 
         User::firstOrCreate([
@@ -49,6 +51,8 @@ class DatabaseSeeder extends Seeder
             'role' => UserRole::Formateur->value,
             'class_id' => $class->id,
             'filiere_id' => $filiere->id,
+            'city' => 'Rabat',
+            'bio' => 'Formateur referent sur les parcours web et data.',
         ]);
 
         User::firstOrCreate([
@@ -63,6 +67,8 @@ class DatabaseSeeder extends Seeder
             'average_grade' => 12.5,
             'absence_count' => 2,
             'skills' => ['html', 'css', 'php'],
+            'city' => 'Marrakech',
+            'bio' => 'Stagiaire motive avec un profil oriente frontend et experience utilisateur.',
         ]);
     }
 }

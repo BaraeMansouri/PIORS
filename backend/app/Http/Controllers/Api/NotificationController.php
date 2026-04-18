@@ -9,7 +9,20 @@ class NotificationController extends Controller
 {
     public function index(): JsonResponse
     {
-        return response()->json(request()->user()->notifications);
+        $notifications = request()->user()
+            ->notifications()
+            ->latest()
+            ->get()
+            ->map(fn ($notification) => [
+                'id' => $notification->id,
+                'title' => $notification->data['title'] ?? 'Notification',
+                'message' => $notification->data['message'] ?? '',
+                'context' => $notification->data['context'] ?? [],
+                'read_at' => $notification->read_at,
+                'created_at' => $notification->created_at,
+            ]);
+
+        return response()->json($notifications);
     }
 
     public function markAsRead(string $id): JsonResponse

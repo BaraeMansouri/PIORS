@@ -24,8 +24,11 @@ class UpdateUserRequest extends FormRequest
             'gender' => ['sometimes', 'nullable', 'string', 'max:20'],
             'birth_date' => ['sometimes', 'nullable', 'date'],
             'address' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'class_id' => ['sometimes', 'nullable', 'string'],
-            'filiere_id' => ['sometimes', 'nullable', 'string'],
+            'city' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'bio' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'avatar' => ['sometimes', 'nullable', 'image', 'max:5120'],
+            'class_id' => ['sometimes', 'nullable', 'integer'],
+            'filiere_id' => ['sometimes', 'nullable', 'integer'],
             'skills' => ['sometimes', 'nullable', 'array'],
             'skills.*' => ['string', 'max:80'],
         ];

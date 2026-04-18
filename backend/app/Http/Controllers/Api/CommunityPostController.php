@@ -9,9 +9,29 @@ use Illuminate\Http\JsonResponse;
 
 class CommunityPostController extends Controller
 {
+    private function loadPost(CommunityPost $post): CommunityPost
+    {
+        return $post->load([
+            'author.class:id,name',
+            'author.filiere:id,name',
+            'comments.author.class:id,name',
+            'comments.author.filiere:id,name',
+        ]);
+    }
+
     public function index(): JsonResponse
     {
-        return response()->json(CommunityPost::query()->with(['author', 'comments'])->latest()->get());
+        $posts = CommunityPost::query()
+            ->with([
+                'author.class:id,name',
+                'author.filiere:id,name',
+                'comments.author.class:id,name',
+                'comments.author.filiere:id,name',
+            ])
+            ->latest()
+            ->get();
+
+        return response()->json($posts);
     }
 
     public function store(StorePostRequest $request): JsonResponse
@@ -23,12 +43,12 @@ class CommunityPostController extends Controller
             'likes' => [],
         ]);
 
-        return response()->json($post, 201);
+        return response()->json($this->loadPost($post), 201);
     }
 
     public function show(CommunityPost $post): JsonResponse
     {
-        return response()->json($post->load(['author', 'comments.author']));
+        return response()->json($this->loadPost($post));
     }
 
     public function update(StorePostRequest $request, CommunityPost $post): JsonResponse
@@ -39,7 +59,7 @@ class CommunityPostController extends Controller
 
         $post->update($request->validated());
 
-        return response()->json($post->fresh());
+        return response()->json($this->loadPost($post->fresh()));
     }
 
     public function destroy(CommunityPost $post): JsonResponse
@@ -64,6 +84,6 @@ class CommunityPostController extends Controller
 
         $post->save();
 
-        return response()->json($post->fresh());
+        return response()->json($this->loadPost($post->fresh()));
     }
 }

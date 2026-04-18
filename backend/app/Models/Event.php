@@ -9,6 +9,7 @@ class Event extends BaseModel
     protected $fillable = [
         'title',
         'description',
+        'image_path',
         'starts_at',
         'ends_at',
         'location',

@@ -21,10 +21,15 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'account_status',
+        'approved_at',
         'phone',
         'gender',
         'birth_date',
         'address',
+        'city',
+        'bio',
+        'avatar',
         'class_id',
         'filiere_id',
         'orientation_score',
@@ -43,6 +48,7 @@ class User extends Authenticatable
     {
         return [
             'birth_date' => 'date',
+            'approved_at' => 'datetime',
             'profile_completed_at' => 'datetime',
             'skills' => 'array',
             'orientation_score' => 'float',
@@ -105,5 +111,10 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->role === UserRole::Stagiaire->value;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->account_status === 'approved';
     }
 }

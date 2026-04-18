@@ -18,7 +18,10 @@ class CommentController extends Controller
             'content' => $request->validated('content'),
         ]);
 
-        return response()->json($comment, 201);
+        return response()->json($comment->load([
+            'author.class:id,name',
+            'author.filiere:id,name',
+        ]), 201);
     }
 
     public function destroy(Comment $comment): JsonResponse

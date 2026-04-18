@@ -9,6 +9,7 @@ class Internship extends BaseModel
     protected $fillable = [
         'title',
         'company',
+        'image_path',
         'description',
         'location',
         'starts_at',
