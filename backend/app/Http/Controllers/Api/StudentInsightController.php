@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Insights\OrientStudentRequest;
 use App\Models\User;
+use App\Models\OrientationResult;
+use App\Models\PedagogicalRecommendation;
 use App\Services\OrientationService;
 use App\Services\PlatformNotificationService;
 use App\Services\RecommendationService;
@@ -30,6 +32,17 @@ class StudentInsightController extends Controller
                 (int) config('app.absence_risk_threshold', env('ABSENCE_RISK_THRESHOLD', 8))
             ),
             'recommendations' => $this->recommendationService->forStudent($student),
+            'pedagogical_recommendations' => PedagogicalRecommendation::query()
+                ->where('student_id', $student->getKey())
+                ->with('trainer')
+                ->latest()
+                ->get(),
+            'orientation_results' => OrientationResult::query()
+                ->where('student_id', $student->getKey())
+                ->with(['test', 'recommendedFiliere'])
+                ->latest()
+                ->limit(5)
+                ->get(),
         ]);
     }
 

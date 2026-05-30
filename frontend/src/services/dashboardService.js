@@ -5,17 +5,22 @@ const delay = (ms = 500) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const dashboardService = {
   async getDashboard(role) {
-    await delay(350);
+    try {
+      const response = await api.get('/dashboard');
+      return response.data;
+    } catch (error) {
+      await delay(350);
 
-    return {
-      stats: dashboardStats[role] ?? dashboardStats.stagiaire,
-      notifications,
-      charts: chartData,
-      spotlightCourses: courses,
-      spotlightEvents: events,
-      spotlightInternships: internships,
-      ai: aiRecommendations,
-    };
+      return {
+        stats: dashboardStats[role] ?? dashboardStats.stagiaire,
+        notifications,
+        charts: chartData,
+        spotlightCourses: courses,
+        spotlightEvents: events,
+        spotlightInternships: internships,
+        ai: aiRecommendations,
+      };
+    }
   },
 
   async getNotifications() {

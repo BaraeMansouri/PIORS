@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion';
-import BackgroundScene from '../components/BackgroundScene';
 import logoMark from '../assets/ofppt-logo.png';
 import ThemeToggle from '../components/ThemeToggle';
 
 export default function AuthLayout({ children }) {
   return (
     <div className="relative min-h-screen overflow-hidden px-4 py-6 md:px-6">
-      <BackgroundScene />
       <div className="relative z-10 mx-auto mb-4 flex max-w-7xl justify-end">
         <ThemeToggle />
       </div>

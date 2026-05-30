@@ -98,6 +98,16 @@ class User extends Authenticatable
         return $this->hasMany(EventRegistration::class, 'student_id');
     }
 
+    public function orientationResults(): HasMany
+    {
+        return $this->hasMany(OrientationResult::class, 'student_id');
+    }
+
+    public function recommendations(): HasMany
+    {
+        return $this->hasMany(PedagogicalRecommendation::class, 'student_id');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === UserRole::Admin->value;

@@ -9,17 +9,8 @@ import GlassCard from '../../components/GlassCard';
 import PrimaryButton from '../../components/PrimaryButton';
 import DataTable from '../../components/DataTable';
 import { dashboardService } from '../../services/dashboardService';
-import { communityPosts } from '../../services/mockData';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement);
-
-const moderationRows = communityPosts.map((post, index) => ({
-  id: post.id,
-  author: post.author.name,
-  className: post.author.className,
-  status: index === 0 ? 'Valide' : 'A surveiller',
-  engagement: `${post.likes} likes`,
-}));
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
@@ -29,6 +20,16 @@ export default function AdminDashboard() {
   }, []);
 
   if (!data) return <div className="text-slate-300">Chargement du dashboard...</div>;
+  const supervisionRows = (data.students ?? []).map((student) => {
+    const risk = Number(student.average_grade ?? 0) < 10 || Number(student.absence_count ?? 0) >= 8;
+    return {
+      id: student.id,
+      author: student.name,
+      className: student.class?.name ?? '-',
+      engagement: `${Number(student.average_grade ?? 0).toFixed(2)} moyenne`,
+      status: risk ? 'A surveiller' : 'Stable',
+    };
+  });
 
   return (
     <div className="space-y-8">
@@ -74,15 +75,15 @@ export default function AdminDashboard() {
       </div>
 
       <GlassCard className="p-5">
-        <SectionHeader eyebrow="Moderation" title="Supervision Community" subtitle="Seules les donnees publiques sont exposees: identite, classe et filiere." />
+        <SectionHeader eyebrow="Supervision" title="Stagiaires a suivre" subtitle="Lecture globale des profils, moyenne et statut pedagogique." />
         <DataTable
           columns={[
             { key: 'author', label: 'Auteur' },
             { key: 'className', label: 'Classe' },
             { key: 'engagement', label: 'Engagement' },
-            { key: 'status', label: 'Statut', render: (value) => <span className={`rounded-full px-3 py-1 text-xs font-semibold ${value === 'Valide' ? 'bg-emerald/15 text-emerald' : 'bg-alert/15 text-rose-200'}`}>{value}</span> },
+            { key: 'status', label: 'Statut', render: (value) => <span className={`rounded-full px-3 py-1 text-xs font-semibold ${value === 'Stable' ? 'bg-emerald/15 text-emerald' : 'bg-alert/15 text-rose-200'}`}>{value}</span> },
           ]}
-          rows={moderationRows}
+          rows={supervisionRows}
         />
       </GlassCard>
     </div>

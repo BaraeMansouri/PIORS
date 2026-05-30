@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AbsenceController;
 use App\Http\Controllers\Api\AcademicClassController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CommunityPostController;
 use App\Http\Controllers\Api\CourseController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\Api\FiliereController;
 use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\InternshipController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OrientationTestController;
+use App\Http\Controllers\Api\PedagogicalRecommendationController;
 use App\Http\Controllers\Api\StudentInsightController;
 use App\Http\Controllers\Api\UserController;
 use App\Enums\UserRole;
@@ -28,8 +31,17 @@ Route::prefix('auth')->group(function (): void {
 });
 
 Route::middleware('auth:sanctum')->group(function (): void {
+    Route::get('dashboard', [DashboardController::class, 'index']);
+
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+
+    Route::get('orientation/tests', [OrientationTestController::class, 'index']);
+    Route::get('orientation/results', [OrientationTestController::class, 'results']);
+    Route::get('orientation/resources', [OrientationTestController::class, 'resources']);
+    Route::post('orientation/tests/{orientationTest}/submit', [OrientationTestController::class, 'submit']);
+
+    Route::get('recommendations', [PedagogicalRecommendationController::class, 'index']);
 
     Route::get('students/{student}/insights', [StudentInsightController::class, 'show'])
         ->middleware('role:'.UserRole::Admin->value.','.UserRole::Formateur->value);
@@ -47,8 +59,12 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('posts/{post}/likes', [CommunityPostController::class, 'toggleLike']);
 
     Route::middleware('role:'.UserRole::Admin->value.','.UserRole::Formateur->value)->group(function (): void {
+        Route::get('learners', [UserController::class, 'index']);
         Route::apiResource('grades', GradeController::class);
         Route::apiResource('absences', AbsenceController::class);
+        Route::post('recommendations', [PedagogicalRecommendationController::class, 'store']);
+        Route::put('recommendations/{recommendation}', [PedagogicalRecommendationController::class, 'update']);
+        Route::delete('recommendations/{recommendation}', [PedagogicalRecommendationController::class, 'destroy']);
     });
 
     Route::middleware('role:'.UserRole::Admin->value)->group(function (): void {
@@ -62,6 +78,12 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
         Route::apiResource('classes', AcademicClassController::class);
         Route::apiResource('filieres', FiliereController::class);
+        Route::post('orientation/tests', [OrientationTestController::class, 'store']);
+        Route::put('orientation/tests/{orientationTest}', [OrientationTestController::class, 'update']);
+        Route::delete('orientation/tests/{orientationTest}', [OrientationTestController::class, 'destroy']);
+        Route::post('orientation/tests/{orientationTest}/questions', [OrientationTestController::class, 'storeQuestion']);
+        Route::put('orientation/questions/{orientationQuestion}', [OrientationTestController::class, 'updateQuestion']);
+        Route::delete('orientation/questions/{orientationQuestion}', [OrientationTestController::class, 'destroyQuestion']);
         Route::post('classes/{academicClass}/assign-students', [AcademicClassController::class, 'assignStudents']);
         Route::post('students/{user}/orientation', [StudentInsightController::class, 'orient']);
     });

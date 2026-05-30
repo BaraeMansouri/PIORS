@@ -11,12 +11,6 @@ import { dashboardService } from '../../services/dashboardService';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const learnerRows = [
-  { id: 1, name: 'Aya Benali', className: 'DD 2026 A', average: '15.2', absence: '2', status: 'Excellent' },
-  { id: 2, name: 'Youssef Lahbabi', className: 'DD 2026 A', average: '12.8', absence: '4', status: 'Stable' },
-  { id: 3, name: 'Meryem Talbi', className: 'DD 2026 B', average: '9.7', absence: '8', status: 'Alerte' },
-];
-
 export default function TrainerDashboard() {
   const [data, setData] = useState(null);
 
@@ -25,6 +19,17 @@ export default function TrainerDashboard() {
   }, []);
 
   if (!data) return <div className="text-slate-300">Chargement...</div>;
+  const learnerRows = (data.students ?? []).map((student) => {
+    const risk = Number(student.average_grade ?? 0) < 10 || Number(student.absence_count ?? 0) >= 8;
+    return {
+      id: student.id,
+      name: student.name,
+      className: student.class?.name ?? student.className ?? '-',
+      average: Number(student.average_grade ?? 0).toFixed(2),
+      absence: student.absence_count ?? 0,
+      status: risk ? 'Alerte' : Number(student.average_grade ?? 0) >= 14 ? 'Excellent' : 'Stable',
+    };
+  });
 
   return (
     <div className="space-y-8">

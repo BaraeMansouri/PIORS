@@ -26,4 +26,9 @@ class Filiere extends BaseModel
     {
         return $this->hasMany(AcademicClass::class, 'filiere_id');
     }
+
+    public function orientationResults(): HasMany
+    {
+        return $this->hasMany(OrientationResult::class, 'recommended_filiere_id');
+    }
 }

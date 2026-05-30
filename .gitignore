@@ -4,3 +4,5 @@
 /backend/storage/*.key
 /frontend/node_modules/
 /frontend/dist/
+/frontend/vite.log
+/frontend/vite.err.log

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { FiBookOpen, FiBriefcase, FiCompass, FiGrid, FiHome, FiLogOut, FiMessageSquare, FiUsers, FiCalendar, FiUser } from 'react-icons/fi';
+import { FiBookOpen, FiBriefcase, FiClipboard, FiCompass, FiGrid, FiHome, FiLogOut, FiMessageSquare, FiSettings, FiUsers, FiCalendar, FiUser } from 'react-icons/fi';
 import { NavLink } from 'react-router-dom';
 import logoMark from '../assets/ofppt-logo.png';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,8 @@ const navByRole = {
     { to: '/internships', label: 'Stages', icon: FiBriefcase },
     { to: '/community', label: 'Community', icon: FiUsers },
     { to: '/orientation', label: 'Orientation IA', icon: FiCompass },
+    { to: '/follow-up', label: 'Suivi', icon: FiClipboard },
+    { to: '/management', label: 'Administration', icon: FiSettings },
     { to: '/profile', label: 'Profil', icon: FiUser },
   ],
   formateur: [
@@ -20,6 +22,7 @@ const navByRole = {
     { to: '/events', label: 'Events', icon: FiCalendar },
     { to: '/internships', label: 'Stages', icon: FiBriefcase },
     { to: '/community', label: 'Community', icon: FiUsers },
+    { to: '/follow-up', label: 'Suivi', icon: FiClipboard },
     { to: '/profile', label: 'Profil', icon: FiUser },
   ],
   stagiaire: [

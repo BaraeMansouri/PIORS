@@ -49,9 +49,9 @@ export default function LoginPage() {
         </form>
         <div className="ui-soft mt-6 rounded-2xl p-4 text-sm">
           <p className="ui-title font-semibold">Acces rapide</p>
-          <p className="ui-muted mt-2">Admin: `admin@piors.test` / `password`</p>
-          <p className="ui-muted">Formateur: `formateur@piors.test` / `password`</p>
-          <p className="ui-muted">Stagiaire: `stagiaire@piors.test` / `password`</p>
+          <p className="ui-muted mt-2">Admin: <code className="text-cyan bg-white/5 px-1 py-0.5 rounded font-mono">admin@piors.test</code> / <code className="text-cyan bg-white/5 px-1 py-0.5 rounded font-mono">password</code></p>
+          <p className="ui-muted mt-1">Formateur: <code className="text-cyan bg-white/5 px-1 py-0.5 rounded font-mono">formateur@piors.test</code> / <code className="text-cyan bg-white/5 px-1 py-0.5 rounded font-mono">password</code></p>
+          <p className="ui-muted mt-1">Stagiaire: <code className="text-cyan bg-white/5 px-1 py-0.5 rounded font-mono">stagiaire@piors.test</code> / <code className="text-cyan bg-white/5 px-1 py-0.5 rounded font-mono">password</code></p>
         </div>
         <p className="ui-muted mt-6 text-sm">
           Nouveau compte ? <Link className="font-semibold text-cyan" to="/register">Creer un acces</Link>

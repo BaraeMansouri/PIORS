@@ -11,6 +11,8 @@ import EventsPage from './pages/modules/EventsPage';
 import InternshipsPage from './pages/modules/InternshipsPage';
 import CommunityPage from './pages/modules/CommunityPage';
 import OrientationPage from './pages/modules/OrientationPage';
+import FollowUpPage from './pages/modules/FollowUpPage';
+import AdminManagementPage from './pages/modules/AdminManagementPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import { useAuth } from './context/AuthContext';
 
@@ -48,6 +50,8 @@ export default function App() {
         <Route path="internships" element={<ProtectedRoute><InternshipsPage /></ProtectedRoute>} />
         <Route path="community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
         <Route path="orientation" element={<ProtectedRoute><OrientationPage /></ProtectedRoute>} />
+        <Route path="follow-up" element={<ProtectedRoute allowedRoles={['admin', 'formateur']}><FollowUpPage /></ProtectedRoute>} />
+        <Route path="management" element={<ProtectedRoute allowedRoles={['admin']}><AdminManagementPage /></ProtectedRoute>} />
         <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       </Route>
 
