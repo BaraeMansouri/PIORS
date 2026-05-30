@@ -6,6 +6,7 @@ import DataTable from '../../components/DataTable';
 import PrimaryButton from '../../components/PrimaryButton';
 import InputField from '../../components/InputField';
 import { followUpService } from '../../services/followUpService';
+import { aiService } from '../../services/aiService';
 
 const today = new Date().toISOString().slice(0, 10);
 
@@ -17,6 +18,7 @@ export default function FollowUpPage() {
   const [recommendations, setRecommendations] = useState([]);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
   const [gradeForm, setGradeForm] = useState({ student_id: '', course_id: '', label: '', score: '', coefficient: 1, graded_at: today });
   const [absenceForm, setAbsenceForm] = useState({ student_id: '', course_id: '', date: today, status: 'unjustified', reason: '' });
   const [recForm, setRecForm] = useState({ student_id: '', title: '', message: '', priority: 'medium', due_at: '' });
@@ -102,6 +104,27 @@ export default function FollowUpPage() {
     }
   };
 
+  const generateAiRecommendation = async () => {
+    if (!recForm.student_id) return;
+
+    try {
+      setAiLoading(true);
+      setError('');
+      const suggestion = await aiService.generateRecommendation(recForm.student_id);
+      setRecForm((prev) => ({
+        ...prev,
+        title: suggestion.title ?? 'Plan de soutien IA',
+        message: suggestion.message ?? '',
+        priority: suggestion.priority ?? 'medium',
+      }));
+      flash(setMessage, `Suggestion IA prete (${suggestion.provider}).`);
+    } catch (aiError) {
+      setError(aiError.response?.data?.message || 'Generation IA impossible.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const closeRecommendation = async (id) => {
     await followUpService.updateRecommendation(id, { status: 'done' });
     await load();
@@ -182,7 +205,13 @@ export default function FollowUpPage() {
         </GlassCard>
 
         <GlassCard className="p-5">
-          <SectionHeader eyebrow="Accompagnement" title="Ajouter un conseil" />
+          <SectionHeader
+            eyebrow="Accompagnement"
+            title="Ajouter un conseil"
+          />
+          <PrimaryButton type="button" variant="success" onClick={generateAiRecommendation} disabled={aiLoading} className="mb-4 w-full">
+            {aiLoading ? 'Generation IA...' : 'Generer conseil IA automatiquement'}
+          </PrimaryButton>
           <form className="space-y-4" onSubmit={submitRecommendation}>
             <Select label="Stagiaire" name="student_id" value={recForm.student_id} onChange={updateForm(setRecForm)}>
               {students.map((student) => <option key={student.id} value={student.id}>{student.name}</option>)}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AbsenceController;
 use App\Http\Controllers\Api\AcademicClassController;
+use App\Http\Controllers\Api\AiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\CommentController;
@@ -32,6 +33,7 @@ Route::prefix('auth')->group(function (): void {
 
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('dashboard', [DashboardController::class, 'index']);
+    Route::post('ai/chat', [AiController::class, 'chat']);
 
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
@@ -60,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::middleware('role:'.UserRole::Admin->value.','.UserRole::Formateur->value)->group(function (): void {
         Route::get('learners', [UserController::class, 'index']);
+        Route::post('ai/students/{student}/recommendation', [AiController::class, 'recommendation']);
         Route::apiResource('grades', GradeController::class);
         Route::apiResource('absences', AbsenceController::class);
         Route::post('recommendations', [PedagogicalRecommendationController::class, 'store']);

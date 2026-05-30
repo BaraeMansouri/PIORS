@@ -39,6 +39,10 @@ const navByRole = {
 export default function Sidebar({ open, onClose }) {
   const { user, logout } = useAuth();
   const items = navByRole[user?.role] ?? [];
+  const openAi = () => {
+    window.dispatchEvent(new CustomEvent('piors:open-ai'));
+    onClose?.();
+  };
 
   const content = (
     <div className="glass-panel flex h-full w-[290px] flex-col rounded-[30px] px-5 py-6">
@@ -73,15 +77,15 @@ export default function Sidebar({ open, onClose }) {
         })}
       </nav>
       <div className="space-y-3 pt-4">
-        <div className="rounded-2xl border border-cyan/20 bg-cyan/10 p-4">
+        <button type="button" onClick={openAi} className="w-full rounded-2xl border border-cyan/20 bg-cyan/10 p-4 text-left transition hover:border-cyan/50 hover:bg-cyan/15">
           <div className="flex items-center gap-3">
             <FiMessageSquare className="text-cyan" />
             <div>
               <p className="ui-title text-sm font-semibold">Assistant PIORS AI</p>
-              <p className="ui-muted text-xs">Disponible en bas a droite</p>
+              <p className="ui-muted text-xs">Cliquer ici pour ouvrir</p>
             </div>
           </div>
-        </div>
+        </button>
         <button type="button" onClick={logout} className="ui-control flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold">
           <FiLogOut /> Deconnexion
         </button>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
+import { useNavigate } from 'react-router-dom';
 import SectionHeader from '../../components/SectionHeader';
 import StatsCard from '../../components/StatsCard';
 import ChartPanel from '../../components/ChartPanel';
@@ -13,6 +14,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function TrainerDashboard() {
   const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dashboardService.getDashboard('formateur').then(setData);
@@ -66,7 +68,7 @@ export default function TrainerDashboard() {
       </div>
 
       <GlassCard className="p-5">
-        <SectionHeader eyebrow="Etudiants" title="Liste priorisee" subtitle="Recherche, filtre et visualisation des progressions les plus sensibles." actions={<PrimaryButton variant="secondary">Saisir notes et absences</PrimaryButton>} />
+        <SectionHeader eyebrow="Etudiants" title="Liste priorisee" subtitle="Recherche, filtre et visualisation des progressions les plus sensibles." actions={<PrimaryButton variant="secondary" onClick={() => navigate('/follow-up')}>Saisir notes et absences</PrimaryButton>} />
         <DataTable
           columns={[
             { key: 'name', label: 'Stagiaire' },
