@@ -1,6 +1,7 @@
 import api from './api';
 
 const backendBase = (import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api').replace(/\/api$/, '');
+const getCurrentUserId = () => String(JSON.parse(localStorage.getItem('piors_user') || '{}').id ?? '');
 
 const resolveAvatar = (avatar, name) => {
   if (!avatar) {
@@ -48,13 +49,14 @@ const normalizePost = (post) => {
   const names = splitName(author.name);
   const likeIds = Array.isArray(post.likes) ? post.likes.map((item) => String(item)) : [];
   const likes = likeIds.length || Number(post.likes ?? 0);
+  const currentUserId = String(post.current_user_id ?? getCurrentUserId());
 
   return {
     ...post,
     id: String(post.id),
     time: post.created_at ? new Date(post.created_at).toLocaleString('fr-FR') : "A l'instant",
     likes,
-    likedByMe: likeIds.length ? likeIds.includes(String(post.current_user_id ?? '')) : Boolean(post.likedByMe),
+    likedByMe: likeIds.length ? likeIds.includes(currentUserId) : Boolean(post.likedByMe),
     author: {
       id: String(author.id ?? ''),
       name: author.name ?? 'Utilisateur',
@@ -72,17 +74,17 @@ const normalizePost = (post) => {
 export const communityService = {
   async getPosts() {
     const response = await api.get('/posts');
-    return response.data.map((post) => normalizePost({ ...post, current_user_id: String(JSON.parse(localStorage.getItem('piors_user') || '{}').id ?? '') }));
+    return response.data.map((post) => normalizePost({ ...post, current_user_id: getCurrentUserId() }));
   },
 
   async createPost(payload) {
     const response = await api.post('/posts', payload);
-    return normalizePost(response.data);
+    return normalizePost({ ...response.data, current_user_id: getCurrentUserId() });
   },
 
   async updatePost(id, payload) {
     const response = await api.put(`/posts/${id}`, payload);
-    return normalizePost(response.data);
+    return normalizePost({ ...response.data, current_user_id: getCurrentUserId() });
   },
 
   async deletePost(id) {
@@ -91,7 +93,7 @@ export const communityService = {
 
   async toggleLike(id) {
     const response = await api.post(`/posts/${id}/likes`);
-    return normalizePost(response.data);
+    return normalizePost({ ...response.data, current_user_id: getCurrentUserId() });
   },
 
   async addComment(postId, payload) {

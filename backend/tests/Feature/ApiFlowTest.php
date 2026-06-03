@@ -241,7 +241,7 @@ class ApiFlowTest extends TestCase
 
         $this->postJson("/api/posts/{$post->id}/likes")
             ->assertOk()
-            ->assertJsonPath('likes.0', $user->id);
+            ->assertJsonPath('likes.0', (string) $user->id);
 
         $this->postJson("/api/posts/{$post->id}/comments", [
             'content' => 'Tres bon partage',

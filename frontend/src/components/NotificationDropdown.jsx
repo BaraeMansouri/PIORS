@@ -8,6 +8,7 @@ export default function NotificationDropdown({ items = [], onApprove, onRead }) 
   const [open, setOpen] = useState(false);
   const [busyId, setBusyId] = useState(null);
   const { user } = useAuth();
+  const unreadCount = items.filter((item) => item.unread).length;
 
   const approve = async (notification) => {
     if (!onApprove || !notification.context?.user_id) return;
@@ -27,7 +28,9 @@ export default function NotificationDropdown({ items = [], onApprove, onRead }) 
     <div className="relative">
       <button type="button" onClick={() => setOpen((prev) => !prev)} className="relative rounded-2xl border border-white/10 bg-white/5 p-3 text-slate-200">
         <FiBell />
-        <span className="absolute -right-1 -top-1 rounded-full bg-cyan px-1.5 text-[10px] font-bold text-slate-950">{items.length}</span>
+        {unreadCount > 0 ? (
+          <span className="absolute -right-1 -top-1 rounded-full bg-cyan px-1.5 text-[10px] font-bold text-slate-950">{unreadCount}</span>
+        ) : null}
       </button>
       <AnimatePresence>
         {open ? (

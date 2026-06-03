@@ -143,7 +143,7 @@ export default function CommunityPage() {
                     {post.tags?.map((tag) => <span key={tag} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-cyan">#{tag}</span>)}
                   </div>
                   <div className="mt-5 flex items-center gap-6 text-sm text-slate-300">
-                    <button type="button" className={`inline-flex items-center gap-2 ${post.likedByMe ? 'text-rose-300' : 'text-slate-300'}`} onClick={() => toggleLike(post.id)}>
+                    <button type="button" className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 transition ${post.likedByMe ? 'bg-rose-500/15 text-rose-300' : 'text-slate-300 hover:bg-white/5'}`} onClick={() => toggleLike(post.id)}>
                       <FiHeart className={post.likedByMe ? 'fill-current text-rose-400' : 'text-slate-400'} /> {post.likes} likes
                     </button>
                     <span className="inline-flex items-center gap-2"><FiMessageCircle className="text-cyan" /> {post.comments.length} commentaires</span>

@@ -75,10 +75,13 @@ class CommunityPostController extends Controller
 
     public function toggleLike(CommunityPost $post): JsonResponse
     {
-        $likes = collect($post->likes ?? []);
-        $userId = request()->user()->getKey();
+        $userId = (string) request()->user()->getKey();
+        $likes = collect($post->likes ?? [])
+            ->map(fn ($id) => (string) $id)
+            ->filter()
+            ->values();
 
-        $post->likes = $likes->contains($userId)
+        $post->likes = $likes->contains(fn (string $id) => $id === $userId)
             ? $likes->reject(fn (string $id) => $id === $userId)->values()->all()
             : $likes->push($userId)->unique()->values()->all();
 
