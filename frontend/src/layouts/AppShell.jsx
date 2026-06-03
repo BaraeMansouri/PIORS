@@ -23,11 +23,17 @@ export default function AppShell() {
   const handleApproveNotification = async (notification) => {
     await dashboardService.approveUser(notification.context.user_id);
     await dashboardService.markNotificationAsRead(notification.id);
+    setNotifications((prev) => prev.map((item) => (
+      item.id === notification.id ? { ...item, unread: false, read_at: new Date().toISOString() } : item
+    )));
     await loadNotifications();
   };
 
   const handleReadNotification = async (notification) => {
     await dashboardService.markNotificationAsRead(notification.id);
+    setNotifications((prev) => prev.map((item) => (
+      item.id === notification.id ? { ...item, unread: false, read_at: new Date().toISOString() } : item
+    )));
     await loadNotifications();
   };
 
